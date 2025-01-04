@@ -1,0 +1,16 @@
+linters:
+  enable:
+    - bodyclose
+    - exhaustruct
+    - exportloopref
+    - gofumpt
+    - goimports
+    - gosec
+    - nilerr
+    - predeclared
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - tparallel
+    - unconvert
+    - unparam
