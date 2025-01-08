@@ -17,6 +17,10 @@ build-dir:
 run-local *args: build
     ./build/{{program}}-{{goos}}-{{goarch}} {{args}}
 
+vendor:
+    go mod tidy
+    go mod vendor
+
 lint:
     golangci-lint run
 
