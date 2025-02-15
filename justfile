@@ -21,6 +21,10 @@ vendor:
     go mod tidy
     go mod vendor
 
+update-readme: build
+    cp -ap ./build/{{program}}-{{goos}}-{{goarch}} ./build/{{program}}
+    uv tool run --from=cogapp@3.4.1 cog -r README.md
+
 lint:
     golangci-lint run
 

@@ -837,7 +837,7 @@ func usage() {
 		commandStyle.Render("command"),
 		flag.CommandLine.FlagUsages(),
 	)
-	fmt.Fprintf(os.Stderr, "%s\n", lipgloss.NewStyle().Margin(0, 1).Render(usage))
+	fmt.Fprintf(os.Stdout, "%s\n", lipgloss.NewStyle().Margin(0, 1).Render(usage))
 }
 
 func main() {

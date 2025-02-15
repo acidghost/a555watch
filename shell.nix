@@ -11,5 +11,6 @@ pkgs.mkShellNoCC {
     golangci-lint
     goreleaser
     just
+    uv
   ];
 }
