@@ -9,7 +9,7 @@ alias r := run-local
 build-all: (build 'darwin' 'arm64') (build 'linux' 'arm64') (build 'linux' 'amd64')
 
 build os=goos arch=goarch: build-dir
-    GOOS={{os}} GOARCH={{arch}} go build -o build/{{program}}-{{os}}-{{arch}}
+    CGO_ENABLED=0 GOOS={{os}} GOARCH={{arch}} go build -o build/{{program}}-{{os}}-{{arch}}
 
 build-dir:
     mkdir -p build
