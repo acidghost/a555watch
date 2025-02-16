@@ -21,6 +21,7 @@
           version = "1.0.0";
           src = ./.;
           vendorHash = null;
+          env.CGO_ENABLED = 0;
         };
       };
 
