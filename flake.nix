@@ -14,14 +14,20 @@
   }:
     utils.lib.eachDefaultSystem (system: let
       pkgs = import nixpkgs {inherit system;};
+      version = "SNAPSHOT";
     in {
       packages = {
         default = pkgs.buildGo123Module {
+          inherit version;
           pname = "a555watch";
-          version = "1.0.0";
           src = ./.;
           vendorHash = null;
           env.CGO_ENABLED = 0;
+          ldflags = [
+            "-X main.buildVersion=${version}"
+            "-X main.buildCommit=${self.rev or "dirty"}"
+            "-X main.buildDate=${self.lastModifiedDate}"
+          ];
         };
       };
 
