@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.2.4
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/sergi/go-diff v1.3.2
-	github.com/spf13/pflag v1.0.5
+	github.com/spf13/pflag v1.0.6
 )
 
 // cause https://github.com/sergi/go-diff/issues/123
