@@ -1,8 +1,8 @@
 linters:
   enable:
     - bodyclose
+    - copyloopvar
     - exhaustruct
-    - exportloopref
     - gofumpt
     - goimports
     - gosec
