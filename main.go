@@ -31,10 +31,18 @@ var (
 	flagLog      = flag.String("log", "", "write debug logs to file")
 	flagDebug    = flag.Bool("debug", false, "enable tracing logs")
 	flagHelp     = flag.BoolP("help", "h", false, "display this help and exit")
+	flagVersion  = flag.BoolP("version", "V", false, "show binary version")
 )
 
 //go:embed banner.txt
 var banner string
+
+// Version information filled at build time
+var (
+	buildVersion = "SNAPSHOT"
+	buildCommit  = "unknown"
+	buildDate    = "1970-01-01"
+)
 
 var (
 	colorDark   = lipgloss.Color("55")
@@ -848,6 +856,11 @@ func main() {
 	flag.Parse()
 	if *flagHelp {
 		flag.Usage()
+		os.Exit(0)
+	}
+
+	if *flagVersion {
+		fmt.Printf("%s version %s (%s) built at %s\n", os.Args[0], buildVersion, buildCommit, buildDate)
 		os.Exit(0)
 	}
 
