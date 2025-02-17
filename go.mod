@@ -1,4 +1,4 @@
-module git.sr.ht/~acidghost/a555watch
+module github.com/acidghost/a555watch
 
 go 1.22.2
 
