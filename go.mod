@@ -4,7 +4,7 @@ go 1.22.2
 
 require (
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.3.3
+	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/sergi/go-diff v1.3.2
 	github.com/spf13/pflag v1.0.6
