@@ -567,7 +567,7 @@ func (m *model) handleCmdCycle(msg cmdMsg) (tea.Cmd, bool) {
 	if msg.err != nil {
 		var ee *exec.ExitError
 		if errors.As(msg.err, &ee) {
-			if !ee.ProcessState.Success() && m.errExit {
+			if !ee.Success() && m.errExit {
 				printErr(errTxtExit)
 				return tea.Quit, true
 			}
@@ -605,7 +605,7 @@ func (m *model) doSwitchContent(changedDiffMode bool) tea.Cmd {
 		printErrf("Unexpected list item type: %v", si)
 		return tea.Quit
 	}
-	if !changedDiffMode && m.seleT != nil && sli.t == *m.seleT {
+	if !changedDiffMode && m.seleT != nil && sli.t.Equal(*m.seleT) {
 		return nil
 	}
 	var (
