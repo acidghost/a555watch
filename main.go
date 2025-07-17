@@ -292,6 +292,8 @@ func newModel(cmd []string) model {
 			key.WithKeys("down", "j"),
 			key.WithHelp("↓/j", "scroll down"),
 		),
+		Left:  key.Binding{},
+		Right: key.Binding{},
 		PageDown: key.NewBinding(
 			key.WithKeys("pgdown", "f"),
 			key.WithHelp("f/pgdn", "page down"),
