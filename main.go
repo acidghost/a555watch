@@ -212,7 +212,7 @@ func newModel(cmd []string) model {
 			),
 		},
 		help:  help.New(),
-		timer: timer.Model{}, //nolint:exhaustruct // We don't use it before re-creating it
+		timer: timer.Model{}, // We don't use it before re-creating it
 		pager: viewport.New(),
 		list:  list.New([]list.Item{}, listDelegate, 0, 0),
 	}
@@ -805,14 +805,19 @@ func mainClassic(cmd []string) {
 		outS := string(out)
 		fmt.Println(outS)
 
-		if err != nil && *flagErrExit {
-			if ee, ok := err.(*exec.ExitError); ok {
+		if err != nil {
+			var ee *exec.ExitError
+			if !errors.As(err, &ee) {
+				printErrf("Failed to run command: %v", err)
+				os.Exit(1)
+			}
+			if *flagErrExit {
 				printErr(errTxtExit)
 				if len(ee.Stderr) > 0 {
 					printErrf("%s", ee.Stderr)
 				}
+				os.Exit(ee.ExitCode())
 			}
-			os.Exit(c.ProcessState.ExitCode())
 		}
 
 		if *flagChgExit && prevOut != nil && *prevOut != outS {
