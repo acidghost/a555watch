@@ -538,6 +538,7 @@ func (m *model) handleCmdCycle(msg cmdMsg) (tea.Cmd, bool) {
 
 	now := time.Now()
 	msgS := string(msg.out)
+	hadPreviousOutput := m.prevT != nil
 	isDifferent := false
 
 	if m.prevT == nil {
@@ -574,7 +575,7 @@ func (m *model) handleCmdCycle(msg cmdMsg) (tea.Cmd, bool) {
 		}
 	}
 
-	if m.chgExit && m.prevT != nil && isDifferent {
+	if m.chgExit && hadPreviousOutput && isDifferent {
 		printErr(errTxtChg)
 		return tea.Quit, true
 	}
