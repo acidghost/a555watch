@@ -1,0 +1,10 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>acidghost/renovate-config",
+    "local>acidghost/renovate-config:approve(digest)",
+    "local>acidghost/renovate-config:approve(patch)",
+    "local>acidghost/renovate-config:approve(minor)",
+    "schedule:daily"
+  ]
+}
