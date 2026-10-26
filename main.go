@@ -11,13 +11,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/list"
-	"github.com/charmbracelet/bubbles/timer"
-	"github.com/charmbracelet/bubbles/viewport"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/list"
+	"charm.land/bubbles/v2/timer"
+	"charm.land/bubbles/v2/viewport"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/colorprofile"
 	"github.com/sergi/go-diff/diffmatchpatch"
 	flag "github.com/spf13/pflag"
 )
@@ -212,7 +213,7 @@ func newModel(cmd []string) model {
 		},
 		help:  help.New(),
 		timer: timer.Model{}, //nolint:exhaustruct // We don't use it before re-creating it
-		pager: viewport.New(0, 0),
+		pager: viewport.New(),
 		list:  list.New([]list.Item{}, listDelegate, 0, 0),
 	}
 
@@ -283,6 +284,7 @@ func newModel(cmd []string) model {
 	}
 
 	m.pager.Style = pagerStyle
+	m.pager.FillHeight = true
 	m.pager.KeyMap = viewport.KeyMap{
 		Up: key.NewBinding(
 			key.WithKeys("up", "k"),
@@ -387,7 +389,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 
-	case tea.KeyMsg:
+	case tea.KeyPressMsg:
 		if !m.list.SettingFilter() {
 			cmd = m.handleKey(msg)
 			cmds = append(cmds, cmd)
@@ -422,7 +424,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-func (m *model) handleKey(msg tea.KeyMsg) tea.Cmd {
+func (m *model) handleKey(msg tea.KeyPressMsg) tea.Cmd {
 	slog.Debug("Key press", "key", msg.String())
 
 	var (
@@ -434,12 +436,7 @@ func (m *model) handleKey(msg tea.KeyMsg) tea.Cmd {
 	switch {
 
 	case key.Matches(msg, m.keys.toggleAltScreen):
-		cmd = tea.EnterAltScreen
-		if m.alt {
-			cmd = tea.ExitAltScreen
-		}
 		m.alt = !m.alt
-		cmds = append(cmds, cmd)
 
 	case key.Matches(msg, m.keys.switchFocus):
 		switch m.focus {
@@ -752,7 +749,7 @@ func (m model) helpView() string {
 	return sty.Render(view)
 }
 
-func (m model) View() string {
+func (m model) View() tea.View {
 	headerView := m.headerView()
 	headerHeight := lipgloss.Height(headerView)
 
@@ -761,7 +758,7 @@ func (m model) View() string {
 	statusView := m.statusView()
 	statusHeight := lipgloss.Height(statusView)
 
-	m.help.Width = m.width - 2
+	m.help.SetWidth(m.width - 2)
 	helpView := m.helpView()
 	helpHeight := lipgloss.Height(helpView)
 
@@ -772,12 +769,14 @@ func (m model) View() string {
 	case focussedPager:
 		pagerTitleView := m.pagerTitleView()
 		pagerTitleHeight := lipgloss.Height(pagerTitleView)
-		m.pager.Width = m.width
-		m.pager.Height = m.height - pagerTitleHeight - headerHeight - statusHeight - helpHeight
+		m.pager.SetWidth(m.width)
+		m.pager.SetHeight(m.height - pagerTitleHeight - headerHeight - statusHeight - helpHeight)
 		views = append(views, pagerTitleView, m.pager.View())
 	}
 	views = append(views, statusView, helpView)
-	return lipgloss.JoinVertical(lipgloss.Top, views...)
+	view := tea.NewView(lipgloss.JoinVertical(lipgloss.Top, views...))
+	view.AltScreen = m.alt
+	return view
 }
 
 func (m model) runCmd() tea.Msg {
@@ -789,11 +788,7 @@ func (m model) runCmd() tea.Msg {
 func mainTea(cmd []string) {
 	m := newModel(cmd)
 
-	var opts []tea.ProgramOption
-	if !*flagNoAlt {
-		opts = append(opts, tea.WithAltScreen())
-	}
-	if _, err := tea.NewProgram(m, opts...).Run(); err != nil {
+	if _, err := tea.NewProgram(m).Run(); err != nil {
 		printErrf("Oops! %v", err)
 		os.Exit(1)
 	}
@@ -847,7 +842,7 @@ func usage() {
 		commandStyle.Render("command"),
 		flag.CommandLine.FlagUsages(),
 	)
-	fmt.Fprintf(os.Stdout, "%s\n", lipgloss.NewStyle().Margin(0, 1).Render(usage))
+	_, _ = lipgloss.Fprintln(os.Stdout, lipgloss.NewStyle().Margin(0, 1).Render(usage))
 }
 
 func main() {
@@ -898,7 +893,7 @@ func main() {
 	logger := slog.New(slog.NewTextHandler(logF, &slogOpts))
 	slog.SetDefault(logger)
 
-	slog.Debug("startup", "colorProfile", lipgloss.DefaultRenderer().ColorProfile())
+	slog.Debug("startup", "colorProfile", colorprofile.Detect(os.Stdout, os.Environ()))
 
 	if *flagClassic {
 		mainClassic(cmd)
@@ -907,7 +902,7 @@ func main() {
 	}
 }
 
-func printErr(s string)             { fmt.Fprintf(os.Stderr, "%s\n", errStyle.Render(s)) }
+func printErr(s string)             { _, _ = lipgloss.Fprintln(os.Stderr, errStyle.Render(s)) }
 func printErrf(f string, vs ...any) { printErr(fmt.Sprintf(f, vs...)) }
 
 func bool2String(v bool) string {
