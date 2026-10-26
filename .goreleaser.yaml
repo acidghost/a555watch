@@ -22,6 +22,9 @@ builds:
       - -X main.buildCommit={{.Commit}}
       - -X main.buildDate={{.Date}}
 
+checksum:
+  name_template: SHA256SUMS
+
 changelog:
   sort: asc
   filters:

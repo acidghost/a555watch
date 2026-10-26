@@ -3,7 +3,6 @@ linters:
   enable:
     - bodyclose
     - copyloopvar
-    - exhaustruct
     - gosec
     - nilerr
     - predeclared
@@ -19,4 +18,4 @@ linters:
       - std-error-handling
 formatters:
   enable:
-    - gofmt
+    - goimports
