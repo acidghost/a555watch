@@ -170,10 +170,9 @@ url = "https://github.com/casey/just/releases/download/1.59.0/just-1.59.0-x86_64
 url_api = "https://api.github.com/repos/casey/just/releases/assets/643131303"
 
 [[tools."pypi:cogapp"]]
-version = "3.6.0"
+version = "3.6.1"
 backend = "pypi:cogapp"
-specifiers = ["3.6.0"]
-uv = { path = ".mise/locks/pypi-cogapp/3.6.0", digest = "sha256:00a1635ba5d0af955e276e9759d6dd71d01d79bab054a939bd2c46e203db05ab" }
+specifiers = ["3.6.1"]
 
 [[tools.python]]
 version = "3.15.2"
